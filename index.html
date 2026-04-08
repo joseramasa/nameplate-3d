@@ -495,7 +495,7 @@ function generate() {
   document.getElementById('dims').innerHTML =
     '<b>' + sz.x.toFixed(0) + '</b> &#215; <b>' + sz.y.toFixed(0) + '</b> &#215; <b>' + sz.z.toFixed(0) + '</b> mm';
   document.getElementById('btnExport').disabled = false;
-  showToast('&#10003; Generado'); setTimeout(hideToast, 1000);
+  showToast('\u2713 Generado'); setTimeout(hideToast, 1000);
 }
 
 function meshToSTL(mesh) {
@@ -698,7 +698,7 @@ function exportSTL() {
   ]);
 
   download(zip, slug + '_nameplate.zip');
-  showToast('&#10003; ZIP: 2 STL + instrucciones'); setTimeout(hideToast, 2000);
+  showToast('\u2713 ZIP: 2 STL + instrucciones'); setTimeout(hideToast, 2000);
 }
 
 function bindUI() {
@@ -728,7 +728,7 @@ function toggleAdvanced() {
 
 function showToast(msg) {
   var t = document.getElementById('toast');
-  t.innerHTML = msg; t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
 }
 function hideToast() { document.getElementById('toast').classList.remove('show'); }
 </script>
