@@ -222,13 +222,18 @@ const FONT_B64 = {
 
 // ─── Decode base64 to ArrayBuffer without fetch ─────────────
 function b64ToArrayBuffer(b64str) {
-  const binStr = atob(b64str);
-  const len = binStr.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binStr.charCodeAt(i);
+  try {
+    const binStr = atob(b64str);
+    const len = binStr.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binStr.charCodeAt(i);
+    }
+    return bytes.buffer;
+  } catch (e) {
+    console.error('Failed to decode base64 font data:', e);
+    throw new Error('Corrupt font data');
   }
-  return bytes.buffer;
 }
 
 const fonts = {};
@@ -243,11 +248,11 @@ const vp = () => document.getElementById('viewport');
 
 (async () => {
   initScene(); initControls(); bindUI(); animate();
-  loadFonts();
+  await loadFonts();
   generate();
 })();
 
-function loadFonts() {
+async function loadFonts() {
   showToast('Cargando fuentes...');
   for (const [key, b64str] of Object.entries(FONT_B64)) {
     try {
@@ -383,13 +388,18 @@ function otPathToShapes(otPath) {
   return sp.toShapes(true);
 }
 
+function getNumber(id, fallback) {
+  var v = +document.getElementById(id).value;
+  return isNaN(v) ? fallback : v;
+}
+
 function readConfig() {
   return {
-    targetWidth: +document.getElementById('inWidth').value,
-    depthA:      +document.getElementById('inDepthA').value,
-    depthB:      +document.getElementById('inDepthB').value,
-    engaste:     +document.getElementById('inEngaste').value / 100,
-    nameRatio:   +document.getElementById('inNameRatio').value / 100,
+    targetWidth: getNumber('inWidth', 100),
+    depthA:      getNumber('inDepthA', 3),
+    depthB:      getNumber('inDepthB', 1),
+    engaste:     getNumber('inEngaste', 30) / 100,
+    nameRatio:   getNumber('inNameRatio', 80) / 100,
     yMode:       document.getElementById('inYMode').value,
     colA:        document.getElementById('inColA').value,
     colB:        document.getElementById('inColB').value,
